@@ -1,0 +1,6 @@
+﻿components/Footer.tsx(3,23): error TS6133: 'ArrowUpRight' is declared but its value is never read.
+pages/Home.tsx(4,28): error TS6133: 'Zap' is declared but its value is never read.
+pages/Home.tsx(4,33): error TS6133: 'TrendingUp' is declared but its value is never read.
+pages/Home.tsx(4,45): error TS6133: 'Code' is declared but its value is never read.
+pages/Home.tsx(4,51): error TS6133: 'CheckCircle2' is declared but its value is never read.
+pages/Home.tsx(165,9): error TS6133: 'scrollYProgress' is declared but its value is never read.

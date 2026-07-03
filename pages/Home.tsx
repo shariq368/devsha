@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Star } from 'lucide-react';
+import { ArrowRight, Star, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { SERVICES, TESTIMONIALS, PROJECTS, WHATSAPP_LINK } from '../constants';
 import { AntigravityBackground } from '../components/ui/antigravity-background';
 import { Service, Project } from '../types';
@@ -71,94 +71,94 @@ const ServiceCard: React.FC<{ service: Service; index: number }> = ({ service, i
   );
 };
 
-// Enhanced Project Card with Parallax and Animations
+// Premium Featured Project Card
 const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, index }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+  const [hovered, setHovered] = useState(false);
+  const isEven = index % 2 === 0;
 
   return (
     <motion.div
-      ref={containerRef}
-      initial={{ opacity: 0, y: 50, scale: 0.95 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-      viewport={{ once: true, margin: "-100px" }}
-      className="sticky top-28 bg-dark/90 backdrop-blur-xl p-1 rounded-3xl border border-white/10 overflow-hidden shadow-2xl z-0"
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, delay: index * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+      viewport={{ once: true, margin: "-80px" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="relative group"
     >
-      <div className="grid md:grid-cols-2 gap-8 items-center p-6 md:p-10">
-        <div className="order-2 md:order-1">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-brand-primary mb-6"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse"></span>
+      {/* Project Number Accent */}
+      <div className="absolute -top-8 left-0 text-[120px] font-black leading-none select-none pointer-events-none z-0"
+        style={{ color: project.color + '08' }}>
+        {String(index + 1).padStart(2, '0')}
+      </div>
+
+      <div className="relative z-10 grid md:grid-cols-5 gap-0 rounded-[32px] overflow-hidden border border-white/8 bg-gradient-to-br from-white/[0.04] to-transparent backdrop-blur-sm shadow-2xl"
+        style={{ boxShadow: hovered ? `0 30px 80px ${project.color}18, 0 0 0 1px ${project.color}20` : '0 20px 60px rgba(0,0,0,0.4)' }}
+      >
+        {/* Image — takes 3/5 width on desktop */}
+        <div
+          className={`relative overflow-hidden cursor-pointer ${ isEven ? 'md:col-span-3 md:order-1' : 'md:col-span-3 md:order-2' } aspect-[16/10] md:aspect-auto min-h-[260px]`}
+          onClick={() => window.open(project.url, '_blank')}
+        >
+          {/* Tinted overlay based on project color */}
+          <div className="absolute inset-0 z-10" style={{ background: `linear-gradient(135deg, ${project.color}22, transparent 60%)` }} />
+          <img
+            src={project.image || `https://picsum.photos/800/600?random=${index + 50}`}
+            alt={project.title}
+            className="w-full h-full object-cover transition-transform duration-700 ease-out"
+            style={{ transform: hovered ? 'scale(1.06)' : 'scale(1)' }}
+          />
+          {/* Gradient fade into info panel */}
+          <div
+            className="absolute inset-y-0 z-20 w-32 hidden md:block"
+            style={{
+              [isEven ? 'right' : 'left']: 0,
+              background: isEven
+                ? 'linear-gradient(to right, transparent, #0A0A0A)'
+                : 'linear-gradient(to left, transparent, #0A0A0A)'
+            }}
+          />
+          {/* Launch icon on hover */}
+          <div className={`absolute top-5 z-30 transition-all duration-300 ${ hovered ? 'opacity-100 scale-100' : 'opacity-0 scale-90' } ${ isEven ? 'right-5' : 'left-5' }`}>
+            <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
+              <ArrowUpRight size={18} className="text-white" />
+            </div>
+          </div>
+        </div>
+
+        {/* Info Panel — takes 2/5 width on desktop */}
+        <div className={`relative flex flex-col justify-center p-8 md:p-10 ${ isEven ? 'md:col-span-2 md:order-2' : 'md:col-span-2 md:order-1' }`}>
+          {/* Category badge */}
+          <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full mb-5 text-xs font-bold uppercase tracking-widest"
+            style={{ backgroundColor: project.color + '18', color: project.color, border: `1px solid ${project.color}30` }}>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: project.color }} />
             {project.category}
-          </motion.div>
+          </div>
 
-          <motion.h3
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight"
-          >
+          <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 leading-snug tracking-tight">
             {project.title}
-          </motion.h3>
+          </h3>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-gray-400 mb-8 leading-relaxed text-lg"
-          >
+          <p className="text-gray-400 text-sm leading-relaxed mb-8">
             {project.description}
-          </motion.p>
+          </p>
 
           <motion.a
             href={project.url}
             target="_blank"
             rel="noopener noreferrer"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="inline-flex items-center gap-2 text-white font-semibold group/link"
+            whileHover={{ x: 4 }}
+            className="inline-flex items-center gap-2 text-sm font-semibold self-start"
+            style={{ color: project.color }}
           >
-            <span className="border-b border-brand-primary pb-0.5 group-hover/link:text-brand-primary transition-colors">Visit Live Site</span>
-            <ArrowRight size={16} className="text-brand-primary group-hover/link:translate-x-1 transition-transform" />
+            <span>Visit Live Site</span>
+            <ExternalLink size={14} />
           </motion.a>
-        </div>
-
-        <div
-          className="order-1 md:order-2 rounded-2xl overflow-hidden aspect-video relative group cursor-pointer border border-white/5 shadow-inner"
-          onClick={() => window.open(project.url, '_blank')}
-        >
-          {/* Background Color Fallback */}
-          <div className="absolute inset-0" style={{ backgroundColor: project.color + '15' }} />
-
-          <motion.div style={{ y }} className="w-full h-[120%] -mt-[10%] relative">
-            <img
-              src={project.image || `https://picsum.photos/800/600?random=${index + 50}`}
-              className="object-cover w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-700 scale-100 group-hover:scale-105 transition-transform"
-              alt={project.title}
-            />
-          </motion.div>
-
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/40 backdrop-blur-[2px]">
-            <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 bg-white text-dark px-6 py-3 rounded-full font-bold flex items-center gap-2 shadow-xl hover:bg-brand-primary hover:text-white">
-              View Project <ArrowRight size={18} />
-            </div>
-          </div>
         </div>
       </div>
     </motion.div>
-  )
-}
+  );
+};
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -273,36 +273,71 @@ const Home: React.FC = () => {
     </section>
   );
 
-  // Section C: Featured Projects (Renamed from Selected Works)
+  // Section C: Featured Projects
   const PortfolioPreview = () => (
-    <section className="py-24 bg-dark relative border-t border-white/5">
+    <section className="py-32 bg-dark relative border-t border-white/5 overflow-hidden">
+      {/* Ambient background glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] rounded-full opacity-[0.04] blur-[100px] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #22C55E, transparent 70%)' }} />
+
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Featured Projects</h2>
-            <p className="text-gray-400 max-w-xl">A curated selection of high-impact digital solutions designed for growth.</p>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-bold uppercase tracking-widest mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
+              Selected Work
+            </div>
+            <h2 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tighter mb-4">
+              Featured<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-[#4ADE80]">Projects</span>
+            </h2>
+            <p className="text-gray-500 max-w-md text-base leading-relaxed">
+              High-impact digital solutions engineered for performance, conversion, and lasting impressions.
+            </p>
           </motion.div>
+
           <motion.button
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             onClick={() => navigate('/portfolio')}
-            className="text-white border-b border-brand-primary pb-1 hover:text-brand-primary transition-colors flex items-center gap-2 group"
+            className="group flex items-center gap-3 px-6 py-3 rounded-full border border-white/10 bg-white/5 hover:bg-brand-primary hover:border-brand-primary text-white text-sm font-semibold transition-all duration-300 self-start md:self-auto"
           >
-            View All Projects <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            View All Projects
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </motion.button>
         </div>
 
-        {/* Enhanced Sticky Scroll Layout */}
-        <div className="space-y-32 pb-12">
+        {/* Project cards */}
+        <div className="flex flex-col gap-8">
           {PROJECTS.slice(0, 3).map((project, idx) => (
             <ProjectCard key={idx} project={project} index={idx} />
           ))}
         </div>
+
+        {/* Bottom CTA row */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-16 flex items-center justify-center gap-4"
+        >
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
+          <button
+            onClick={() => navigate('/portfolio')}
+            className="px-8 py-3 rounded-full border border-brand-primary/40 bg-brand-primary/10 text-brand-primary text-sm font-semibold hover:bg-brand-primary hover:text-white transition-all duration-300"
+          >
+            See all {PROJECTS.length} projects →
+          </button>
+          <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10" />
+        </motion.div>
       </div>
     </section>
   );

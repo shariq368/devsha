@@ -7,6 +7,7 @@ import imgAtsons from './Assets/website preview picture/atsons.png';
 import imgLeatherLuxes from './Assets/website preview picture/leatherluxes.png';
 import imgPanaverse from './Assets/website preview picture/panaversedao.png';
 import imgKZFurniture from './Assets/website preview picture/kzfurniture.png';
+import imgEosLtd from './Assets/website preview picture/eos-ltd.png';
 
 export const WHATSAPP_NUMBER = "923082891023";
 export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}`;
@@ -59,6 +60,14 @@ export const PROJECTS: Project[] = [
     color: "#D4A853",
     description: "Luxury furniture & interior design showcase with editorial projects and craftsmanship highlights.",
     image: imgKZFurniture
+  },
+  {
+    title: "EOS Distribution",
+    url: "https://eos-ltd.tech",
+    category: "B2B Distribution",
+    color: "#06B6D4",
+    description: "Multi-vendor product feed and printer consumables management system.",
+    image: imgEosLtd
   }
 ];
 

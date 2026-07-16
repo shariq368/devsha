@@ -10,10 +10,6 @@ import ceoImg from '../Assets/ceo.jpeg';
 // Separate component for Spotlight Effect
 const SPOTLIGHT_COLORS = [
   "34, 197, 94",  // Green (#22C55E)
-  "6, 182, 212",  // Cyan (#06B6D4)
-  "236, 72, 153", // Pink (#EC4899)
-  "234, 179, 8",  // Yellow (#EAB308)
-  "249, 115, 22", // Orange (#F97316)
 ];
 
 const ServiceCard: React.FC<{ service: Service; index: number }> = ({ service, index }) => {
@@ -189,54 +185,16 @@ const Home: React.FC = () => {
 
   // Section A: Hero
   const HeroSection = () => (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden py-24">
-      {/* Background Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/10 via-dark-navy/80 to-[#0A0A0A] opacity-20" />
-      
-      {/* Ambient background glow spheres (cyan, pink, yellow, emerald green) */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{
-            x: [0, 40, -20, 0],
-            y: [0, -30, 20, 0],
-            scale: [1, 1.1, 0.9, 1],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-12 left-1/4 w-[350px] h-[350px] rounded-full bg-brand-cyan/10 blur-[90px]"
-        />
-        <motion.div
-          animate={{
-            x: [0, -30, 30, 0],
-            y: [0, 40, -20, 0],
-            scale: [1, 0.9, 1.1, 1],
-          }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-brand-pink/5 blur-[110px]"
-        />
-        <motion.div
-          animate={{
-            x: [0, 20, -30, 0],
-            y: [0, 30, 40, 0],
-            scale: [1, 1.15, 0.95, 1],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-12 left-1/3 w-[300px] h-[300px] rounded-full bg-brand-yellow/5 blur-[90px]"
-        />
-        <motion.div
-          animate={{
-            x: [0, -20, 10, 0],
-            y: [0, -40, -10, 0],
-          }}
-          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-1/3 right-1/10 w-[250px] h-[250px] rounded-full bg-brand-primary/5 blur-[80px]"
-        />
-      </div>
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* CSS Linear Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-brand-primary to-[#0A0A0A] opacity-20" />
+      <div className="absolute inset-0 bg-dark/80" />
 
-      {/* Background Canvas Particles */}
+      {/* Background Animation */}
       <AntigravityBackground />
 
       {/* Subtle Gradient Overlay for Depth at bottom */}
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-dark-deep to-transparent z-0 pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-dark to-transparent z-0 pointer-events-none" />
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center pt-20">
         <motion.div
@@ -246,41 +204,36 @@ const Home: React.FC = () => {
           className="max-w-4xl flex flex-col items-center"
         >
           {/* Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4.5 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-xl mb-8 hover:bg-white/[0.08] transition-all cursor-default shadow-lg shadow-black/20">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-primary"></span>
-            </span>
-            <span className="text-xs font-semibold uppercase tracking-widest text-gray-200">Available for new projects</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6 hover:bg-white/10 transition-colors cursor-default">
+            <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse"></span>
+            <span className="text-sm font-medium text-gray-200">Available for new projects</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-extrabold font-heading leading-tight tracking-tight mb-6 drop-shadow-xl text-white">
+          <h1 className="text-5xl md:text-7xl font-extrabold font-sans leading-tight tracking-tight mb-6 drop-shadow-lg text-white">
             I Design & Build <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary via-[#4ADE80] to-brand-cyan">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary via-white to-brand-yellow">
               Digital Experiences
             </span> <br />
             That Drive Results
           </h1>
 
-          <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto font-light drop-shadow-md">
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto font-light drop-shadow-md">
             Full-Stack Developer • Designer • Growth Strategist
           </p>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap justify-center gap-5 z-20">
+          <div className="flex flex-wrap justify-center gap-4">
             <button
               onClick={() => navigate('/portfolio')}
-              className="px-8 py-4 bg-brand-orange text-white rounded-full font-bold hover:bg-brand-orange/90 transition-all duration-300 flex items-center gap-2 group shadow-xl shadow-brand-orange/20 hover:shadow-brand-orange/40 hover:scale-[1.02]"
+              className="px-8 py-4 bg-white text-dark rounded-full font-bold hover:bg-brand-primary hover:text-white transition-all duration-300 flex items-center gap-2 group shadow-xl shadow-brand-primary/20"
             >
-              View Selected Work
+              View My Work
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
             <button
               onClick={() => window.open(WHATSAPP_LINK, '_blank')}
-              className="px-8 py-4 bg-white/[0.04] border border-white/[0.08] text-white rounded-full font-bold hover:bg-white/[0.08] transition-all duration-300 backdrop-blur-xl hover:scale-[1.02] flex items-center gap-1.5"
+              className="px-8 py-4 bg-transparent border border-white/20 text-white rounded-full font-bold hover:bg-white/10 transition-all duration-300 backdrop-blur-md"
             >
               Book a Call
-              <ArrowUpRight size={18} className="text-gray-400" />
             </button>
           </div>
         </motion.div>
@@ -299,12 +252,12 @@ const Home: React.FC = () => {
           </div>
           <div className="relative group rounded-3xl border border-white/5 bg-white/[0.01] backdrop-blur-xl p-8 hover:bg-white/[0.03] hover:border-white/10 transition-all duration-300 shadow-xl">
             <div className="text-4xl font-extrabold text-white mb-2 font-heading">6+ Major</div>
-            <div className="text-xs font-bold uppercase tracking-wider text-brand-cyan mb-1.5">Production Projects</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-brand-yellow mb-1.5">Production Projects</div>
             <p className="text-gray-400 text-sm leading-relaxed">Deployed scalable platforms with seamless client satisfaction.</p>
           </div>
           <div className="relative group rounded-3xl border border-white/5 bg-white/[0.01] backdrop-blur-xl p-8 hover:bg-white/[0.03] hover:border-white/10 transition-all duration-300 shadow-xl">
             <div className="text-4xl font-extrabold text-white mb-2 font-heading">100%</div>
-            <div className="text-xs font-bold uppercase tracking-wider text-brand-yellow mb-1.5">On-Time Delivery</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-brand-primary mb-1.5">On-Time Delivery</div>
             <p className="text-gray-400 text-sm leading-relaxed">High-touch communication with robust engineering standards.</p>
           </div>
         </motion.div>
@@ -321,11 +274,11 @@ const Home: React.FC = () => {
             Clean Architecture
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-cyan" />
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-yellow" />
             Vite & React Stacks
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-pink" />
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
             Dedicated Support
           </div>
         </motion.div>
@@ -547,22 +500,16 @@ const Home: React.FC = () => {
 
   // Section G: Final CTA
   const FinalCTA = () => (
-    <section className="py-32 relative overflow-hidden flex items-center justify-center">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-orange/15 via-[#070A13] to-[#070A13] pointer-events-none" />
-      
-      {/* Background glow spots */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -bottom-10 left-1/4 w-[250px] h-[250px] rounded-full bg-brand-pink/5 blur-[80px]" />
-        <div className="absolute -top-10 right-1/4 w-[300px] h-[300px] rounded-full bg-brand-cyan/5 blur-[90px]" />
-      </div>
+    <section className="py-32 bg-dark relative overflow-hidden flex items-center justify-center">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-primary/20 via-dark to-dark pointer-events-none" />
 
       <div className="container mx-auto px-6 relative z-10 text-center">
         <h2 className="text-5xl md:text-7xl font-bold text-white mb-8">
           Ready to <span className="relative inline-block px-4">
-            <svg className="absolute inset-0 w-full h-full text-brand-orange -z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path d="M0,50 Q50,0 100,50 Q50,100 0,50 Z" fill="currentColor" opacity="0.3" />
+            <svg className="absolute inset-0 w-full h-full text-brand-yellow -z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <path d="M0,50 Q50,0 100,50 Q50,100 0,50 Z" fill="currentColor" opacity="0.8" />
             </svg>
-            <span className="relative z-10 text-white">grow</span>
+            <span className="relative z-10 text-dark">grow</span>
           </span> your business?
         </h2>
 
@@ -570,7 +517,7 @@ const Home: React.FC = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => window.open(WHATSAPP_LINK, '_blank')}
-          className="px-10 py-5 bg-brand-orange text-white text-xl font-bold rounded-full shadow-2xl shadow-brand-orange/30 hover:shadow-brand-orange/50 transition-all"
+          className="px-10 py-5 bg-brand-primary text-white text-xl font-bold rounded-full shadow-2xl shadow-brand-primary/40 hover:shadow-brand-primary/60 transition-all"
         >
           Work With Muhammad Shariq →
         </motion.button>
@@ -579,7 +526,7 @@ const Home: React.FC = () => {
         <motion.div
           animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
           transition={{ duration: 4, repeat: Infinity }}
-          className="absolute top-10 right-[20%] text-brand-orange/70"
+          className="absolute top-10 right-[20%] text-brand-primary"
         >
           <Star fill="currentColor" size={48} />
         </motion.div>

@@ -4,9 +4,7 @@
 
 @layer base {
   body {
-    @apply font-sans text-neutral-400;
-    background: radial-gradient(circle at 50% 0%, #0B0F1E 0%, #070A13 100%);
-    min-height: 100vh;
+    @apply font-sans bg-dark text-neutral-400;
   }
 
   h1,

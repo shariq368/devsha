@@ -21,37 +21,12 @@ const Portfolio: React.FC = () => {
     : PROJECTS.filter(p => p.category === activeFilter);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Ambient background glow spheres (cyan, pink, yellow) */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{
-            x: [0, 20, -10, 0],
-            y: [0, -20, 10, 0],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-12 left-[10%] w-[300px] h-[300px] rounded-full bg-brand-cyan/10 blur-[80px]"
-        />
-        <motion.div
-          animate={{
-            x: [0, -20, 20, 0],
-            y: [0, 30, -10, 0],
-          }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/3 right-[10%] w-[350px] h-[350px] rounded-full bg-brand-pink/5 blur-[100px]"
-        />
-        <motion.div
-          animate={{
-            x: [0, 15, -15, 0],
-            y: [0, 20, 30, 0],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-12 left-1/4 w-[280px] h-[280px] rounded-full bg-brand-yellow/5 blur-[90px]"
-        />
-      </div>
-
+    <div className="min-h-screen bg-dark relative overflow-hidden">
       {/* Subtle background texture */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
+      {/* Top ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full opacity-[0.06] blur-[120px] pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse, #22C55E, transparent 70%)' }} />
 
       <div className="relative z-10 pt-32 pb-32 px-6">
         <div className="container mx-auto max-w-7xl">
@@ -271,7 +246,7 @@ const Portfolio: React.FC = () => {
               <div className="flex flex-wrap justify-center gap-4">
                 <button
                   onClick={() => window.open(WHATSAPP_LINK, '_blank')}
-                  className="px-8 py-4 bg-brand-orange text-white rounded-full font-bold hover:bg-brand-orange/90 transition-all duration-300 shadow-xl shadow-brand-orange/25 flex items-center gap-2 group hover:scale-[1.02]"
+                  className="px-8 py-4 bg-brand-primary text-white rounded-full font-bold hover:bg-[#16a34a] transition-all duration-300 shadow-xl shadow-brand-primary/30 flex items-center gap-2 group"
                 >
                   Start a Conversation
                   <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

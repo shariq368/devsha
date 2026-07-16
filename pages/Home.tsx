@@ -8,6 +8,14 @@ import { Service, Project } from '../types';
 import ceoImg from '../Assets/ceo.jpeg';
 
 // Separate component for Spotlight Effect
+const SPOTLIGHT_COLORS = [
+  "34, 197, 94",  // Green (#22C55E)
+  "6, 182, 212",  // Cyan (#06B6D4)
+  "236, 72, 153", // Pink (#EC4899)
+  "234, 179, 8",  // Yellow (#EAB308)
+  "249, 115, 22", // Orange (#F97316)
+];
+
 const ServiceCard: React.FC<{ service: Service; index: number }> = ({ service, index }) => {
   const divRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -27,6 +35,9 @@ const ServiceCard: React.FC<{ service: Service; index: number }> = ({ service, i
     setOpacity(0);
   };
 
+  const spotColor = SPOTLIGHT_COLORS[index % SPOTLIGHT_COLORS.length];
+  const isHovered = opacity > 0;
+
   return (
     <motion.div
       ref={divRef}
@@ -37,33 +48,46 @@ const ServiceCard: React.FC<{ service: Service; index: number }> = ({ service, i
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="relative group rounded-3xl border border-white/10 bg-gray-900/50 overflow-hidden"
+      className="relative group rounded-3xl border border-white/5 bg-white/[0.02] backdrop-blur-md overflow-hidden transition-all duration-300 hover:scale-[1.01]"
     >
-      {/* Spotlight Gradient - Border Reveal (Neon Green: 34, 197, 94) */}
+      {/* Spotlight Gradient - Border Reveal */}
       <div
         className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
         style={{
           opacity,
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(34, 197, 94, 0.4), transparent 40%)`,
+          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(${spotColor}, 0.25), transparent 40%)`,
         }}
       />
 
       {/* Inner Content Container */}
-      <div className="relative h-full bg-dark/95 backdrop-blur-xl p-8 rounded-[23px] m-[1px] transition-colors duration-300 group-hover:bg-dark/80">
+      <div className="relative h-full bg-[#090D1A]/90 p-8 rounded-[23px] m-[1px] transition-colors duration-300 group-hover:bg-[#0C1224]/85">
         {/* Inner Spotlight for depth */}
         <div
           className="pointer-events-none absolute inset-0 opacity-0 transition duration-300"
           style={{
             opacity,
-            background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, rgba(34, 197, 94, 0.1), transparent 40%)`,
+            background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, rgba(${spotColor}, 0.08), transparent 40%)`,
           }}
         />
 
         <div className="relative z-10">
-          <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-brand-primary group-hover:bg-brand-primary group-hover:text-white group-hover:scale-110 transition-all duration-300 shadow-lg shadow-brand-primary/10">
+          <div 
+            className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-brand-primary transition-all duration-300 shadow-lg"
+            style={{ 
+              backgroundColor: isHovered ? `rgba(${spotColor}, 0.15)` : '', 
+              borderColor: isHovered ? `rgba(${spotColor}, 0.3)` : '',
+              color: isHovered ? `rgb(${spotColor})` : 'rgba(255,255,255,0.7)',
+              boxShadow: isHovered ? `0 10px 20px rgba(${spotColor}, 0.15)` : ''
+            }}
+          >
             <service.icon size={28} />
           </div>
-          <h3 className="text-xl font-bold text-white mb-3 group-hover:text-brand-primary transition-colors">{service.title}</h3>
+          <h3 
+            className="text-xl font-bold text-white mb-3 transition-colors duration-300"
+            style={{ color: isHovered ? `rgb(${spotColor})` : 'white' }}
+          >
+            {service.title}
+          </h3>
           <p className="text-gray-400 text-sm leading-relaxed">{service.description}</p>
         </div>
       </div>
@@ -165,83 +189,145 @@ const Home: React.FC = () => {
 
   // Section A: Hero
   const HeroSection = () => (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* CSS Linear Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#22C55E] to-[#0A0A0A] opacity-20" />
-      <div className="absolute inset-0 bg-dark/80" /> {/* Overlay to ensure text readability if needed, or remove for full brightness */}
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden py-24">
+      {/* Background Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/10 via-dark-navy/80 to-[#0A0A0A] opacity-20" />
+      
+      {/* Ambient background glow spheres (cyan, pink, yellow, emerald green) */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            x: [0, 40, -20, 0],
+            y: [0, -30, 20, 0],
+            scale: [1, 1.1, 0.9, 1],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-12 left-1/4 w-[350px] h-[350px] rounded-full bg-brand-cyan/10 blur-[90px]"
+        />
+        <motion.div
+          animate={{
+            x: [0, -30, 30, 0],
+            y: [0, 40, -20, 0],
+            scale: [1, 0.9, 1.1, 1],
+          }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-brand-pink/5 blur-[110px]"
+        />
+        <motion.div
+          animate={{
+            x: [0, 20, -30, 0],
+            y: [0, 30, 40, 0],
+            scale: [1, 1.15, 0.95, 1],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-12 left-1/3 w-[300px] h-[300px] rounded-full bg-brand-yellow/5 blur-[90px]"
+        />
+        <motion.div
+          animate={{
+            x: [0, -20, 10, 0],
+            y: [0, -40, -10, 0],
+          }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-1/3 right-1/10 w-[250px] h-[250px] rounded-full bg-brand-primary/5 blur-[80px]"
+        />
+      </div>
 
-      {/* Background Animation */}
+      {/* Background Canvas Particles */}
       <AntigravityBackground />
 
       {/* Subtle Gradient Overlay for Depth at bottom */}
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-dark to-transparent z-0 pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-dark-deep to-transparent z-0 pointer-events-none" />
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center pt-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-4xl"
+          className="max-w-4xl flex flex-col items-center"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6 hover:bg-white/10 transition-colors cursor-default">
-            <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse"></span>
-            <span className="text-sm font-medium text-gray-200">Available for new projects</span>
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2.5 px-4.5 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-xl mb-8 hover:bg-white/[0.08] transition-all cursor-default shadow-lg shadow-black/20">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-primary"></span>
+            </span>
+            <span className="text-xs font-semibold uppercase tracking-widest text-gray-200">Available for new projects</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-extrabold font-sans leading-tight tracking-tight mb-6 drop-shadow-lg">
+          <h1 className="text-5xl md:text-7xl font-extrabold font-heading leading-tight tracking-tight mb-6 drop-shadow-xl text-white">
             I Design & Build <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary via-white to-[#4ADE80]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary via-[#4ADE80] to-brand-cyan">
               Digital Experiences
             </span> <br />
             That Drive Results
           </h1>
 
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto font-light drop-shadow-md">
+          <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto font-light drop-shadow-md">
             Full-Stack Developer • Designer • Growth Strategist
           </p>
 
-          <div className="flex flex-wrap justify-center gap-4">
+          {/* Action Buttons */}
+          <div className="flex flex-wrap justify-center gap-5 z-20">
             <button
               onClick={() => navigate('/portfolio')}
-              className="px-8 py-4 bg-white text-dark rounded-full font-bold hover:bg-brand-primary hover:text-white transition-all duration-300 flex items-center gap-2 group shadow-xl shadow-brand-primary/20"
+              className="px-8 py-4 bg-brand-orange text-white rounded-full font-bold hover:bg-brand-orange/90 transition-all duration-300 flex items-center gap-2 group shadow-xl shadow-brand-orange/20 hover:shadow-brand-orange/40 hover:scale-[1.02]"
             >
-              View My Work
+              View Selected Work
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
             <button
               onClick={() => window.open(WHATSAPP_LINK, '_blank')}
-              className="px-8 py-4 bg-transparent border border-white/20 text-white rounded-full font-bold hover:bg-white/10 transition-all duration-300 backdrop-blur-md"
+              className="px-8 py-4 bg-white/[0.04] border border-white/[0.08] text-white rounded-full font-bold hover:bg-white/[0.08] transition-all duration-300 backdrop-blur-xl hover:scale-[1.02] flex items-center gap-1.5"
             >
               Book a Call
+              <ArrowUpRight size={18} className="text-gray-400" />
             </button>
           </div>
         </motion.div>
 
-        {/* Floating Cards */}
+        {/* 3 Glassmorphic Hero Stat Cards */}
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="hidden lg:block absolute left-4 bottom-32 w-64 p-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl w-full mt-20 text-left"
         >
-          <div className="text-4xl font-bold text-brand-primary mb-2">10+</div>
-          <div className="text-sm text-gray-300">Years of Experience in Design & Development</div>
+          <div className="relative group rounded-3xl border border-white/5 bg-white/[0.01] backdrop-blur-xl p-8 hover:bg-white/[0.03] hover:border-white/10 transition-all duration-300 shadow-xl">
+            <div className="text-4xl font-extrabold text-white mb-2 font-heading">10+</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-brand-primary mb-1.5">Years Experience</div>
+            <p className="text-gray-400 text-sm leading-relaxed">Crafting high-performance digital products and web architectures.</p>
+          </div>
+          <div className="relative group rounded-3xl border border-white/5 bg-white/[0.01] backdrop-blur-xl p-8 hover:bg-white/[0.03] hover:border-white/10 transition-all duration-300 shadow-xl">
+            <div className="text-4xl font-extrabold text-white mb-2 font-heading">6+ Major</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-brand-cyan mb-1.5">Production Projects</div>
+            <p className="text-gray-400 text-sm leading-relaxed">Deployed scalable platforms with seamless client satisfaction.</p>
+          </div>
+          <div className="relative group rounded-3xl border border-white/5 bg-white/[0.01] backdrop-blur-xl p-8 hover:bg-white/[0.03] hover:border-white/10 transition-all duration-300 shadow-xl">
+            <div className="text-4xl font-extrabold text-white mb-2 font-heading">100%</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-brand-yellow mb-1.5">On-Time Delivery</div>
+            <p className="text-gray-400 text-sm leading-relaxed">High-touch communication with robust engineering standards.</p>
+          </div>
         </motion.div>
 
+        {/* Feature list under the cards */}
         <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.7, duration: 0.8 }}
-          className="hidden lg:block absolute right-4 top-32 w-64 p-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          className="flex flex-wrap justify-center items-center gap-6 mt-8 text-[11px] font-semibold uppercase tracking-widest text-gray-400"
         >
-          <div className="flex -space-x-3 mb-4">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="w-10 h-10 rounded-full border-2 border-dark bg-gray-700 overflow-hidden">
-                <img src={`https://picsum.photos/40/40?random=${i + 10}`} alt="Client" />
-              </div>
-            ))}
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+            Clean Architecture
           </div>
-          <div className="text-sm text-gray-300">Trusted by global clients across multiple industries</div>
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-cyan" />
+            Vite & React Stacks
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-pink" />
+            Dedicated Support
+          </div>
         </motion.div>
       </div>
     </section>
@@ -461,16 +547,22 @@ const Home: React.FC = () => {
 
   // Section G: Final CTA
   const FinalCTA = () => (
-    <section className="py-32 bg-dark relative overflow-hidden flex items-center justify-center">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-primary/20 via-dark to-dark pointer-events-none" />
+    <section className="py-32 relative overflow-hidden flex items-center justify-center">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-orange/15 via-[#070A13] to-[#070A13] pointer-events-none" />
+      
+      {/* Background glow spots */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -bottom-10 left-1/4 w-[250px] h-[250px] rounded-full bg-brand-pink/5 blur-[80px]" />
+        <div className="absolute -top-10 right-1/4 w-[300px] h-[300px] rounded-full bg-brand-cyan/5 blur-[90px]" />
+      </div>
 
       <div className="container mx-auto px-6 relative z-10 text-center">
         <h2 className="text-5xl md:text-7xl font-bold text-white mb-8">
           Ready to <span className="relative inline-block px-4">
-            <svg className="absolute inset-0 w-full h-full text-brand-yellow -z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path d="M0,50 Q50,0 100,50 Q50,100 0,50 Z" fill="currentColor" opacity="0.8" />
+            <svg className="absolute inset-0 w-full h-full text-brand-orange -z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <path d="M0,50 Q50,0 100,50 Q50,100 0,50 Z" fill="currentColor" opacity="0.3" />
             </svg>
-            <span className="relative z-10 text-dark">grow</span>
+            <span className="relative z-10 text-white">grow</span>
           </span> your business?
         </h2>
 
@@ -478,7 +570,7 @@ const Home: React.FC = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => window.open(WHATSAPP_LINK, '_blank')}
-          className="px-10 py-5 bg-brand-primary text-white text-xl font-bold rounded-full shadow-2xl shadow-brand-primary/40 hover:shadow-brand-primary/60 transition-all"
+          className="px-10 py-5 bg-brand-orange text-white text-xl font-bold rounded-full shadow-2xl shadow-brand-orange/30 hover:shadow-brand-orange/50 transition-all"
         >
           Work With Muhammad Shariq →
         </motion.button>
@@ -487,7 +579,7 @@ const Home: React.FC = () => {
         <motion.div
           animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
           transition={{ duration: 4, repeat: Infinity }}
-          className="absolute top-10 right-[20%] text-brand-primary"
+          className="absolute top-10 right-[20%] text-brand-orange/70"
         >
           <Star fill="currentColor" size={48} />
         </motion.div>

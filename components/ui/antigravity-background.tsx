@@ -3,11 +3,11 @@ import React, { useEffect, useRef } from 'react';
 // Color palette inspired by antigravity.google, adapted to brand
 const PARTICLE_COLORS = [
   { r: 34, g: 197, b: 94 },   // Brand green (#22C55E)
-  { r: 74, g: 222, b: 128 },  // Light green (#4ADE80)
-  { r: 16, g: 185, b: 129 },  // Emerald (#10B981)
   { r: 6, g: 182, b: 212 },   // Cyan (#06B6D4)
+  { r: 236, g: 72, b: 153 },  // Pink (#EC4899)
+  { r: 234, g: 179, b: 8 },   // Yellow (#EAB308)
+  { r: 249, g: 115, b: 22 },  // Orange (#F97316)
   { r: 255, g: 255, b: 255 }, // White
-  { r: 59, g: 130, b: 246 },  // Blue (#3B82F6)
 ];
 
 interface ParticleData {
@@ -105,7 +105,7 @@ export const AntigravityBackground: React.FC = () => {
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(34, 197, 94, ${lineOpacity})`;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${lineOpacity})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }

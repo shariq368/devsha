@@ -34,12 +34,32 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark pt-32 pb-24 px-6 relative flex flex-col items-center">
-       <div className="container mx-auto max-w-6xl">
-          <button 
-            onClick={() => navigate('/')} 
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-12 group"
-          >
+    <div className="min-h-screen pt-32 pb-24 px-6 relative flex flex-col items-center overflow-hidden">
+      {/* Ambient background glow spheres (cyan, pink, yellow) */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            x: [0, -15, 15, 0],
+            y: [0, 25, -15, 0],
+          }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-10 left-1/3 w-[300px] h-[300px] rounded-full bg-brand-cyan/10 blur-[80px]"
+        />
+        <motion.div
+          animate={{
+            x: [0, 25, -10, 0],
+            y: [0, -20, 20, 0],
+          }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-20 right-1/4 w-[350px] h-[350px] rounded-full bg-brand-pink/5 blur-[100px]"
+        />
+      </div>
+
+      <div className="container mx-auto max-w-6xl relative z-10">
+        <button 
+          onClick={() => navigate('/')} 
+          className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-12 group"
+        >
             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" /> Back to Home
           </button>
 
@@ -167,7 +187,7 @@ const Contact: React.FC = () => {
                 </div>
                 <button 
                   type="submit"
-                  className="w-full bg-white text-dark font-bold py-4 rounded-xl hover:bg-brand-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group"
+                  className="w-full bg-brand-orange text-white font-bold py-4 rounded-xl hover:bg-brand-orange/90 transition-all duration-300 shadow-md shadow-brand-orange/15 hover:shadow-brand-orange/30 flex items-center justify-center gap-2 group hover:scale-[1.01]"
                 >
                   Send Message
                   <Send size={18} className="group-hover:translate-x-1 transition-transform" />

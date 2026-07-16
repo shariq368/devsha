@@ -30,7 +30,7 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-[60] py-4 px-6 md:px-12 transition-all duration-300 backdrop-blur-sm bg-dark/50 border-b border-white/5">
+      <header className="fixed top-0 left-0 right-0 z-[60] py-4 px-6 md:px-12 transition-all duration-300 backdrop-blur-md bg-[#070A13]/60 border-b border-white/[0.05] shadow-lg shadow-black/10">
         <div className="max-w-7xl mx-auto flex items-center justify-between relative">
           <div
             className="text-2xl font-bold font-sans cursor-pointer tracking-tighter z-20"
@@ -52,7 +52,7 @@ const Header: React.FC = () => {
           <div className="flex items-center gap-4 z-20">
             <button
               onClick={() => window.open(WHATSAPP_LINK, '_blank')}
-              className="hidden md:block bg-white text-dark px-6 py-2 rounded-full text-sm font-bold hover:bg-brand-primary hover:text-white transition-all duration-300 transform hover:scale-105"
+              className="hidden md:block bg-brand-orange text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-brand-orange/90 transition-all duration-300 shadow-md shadow-brand-orange/15 hover:shadow-brand-orange/30 transform hover:scale-105"
             >
               Hire Me
             </button>
@@ -111,7 +111,7 @@ const Header: React.FC = () => {
 
           <button
             onClick={() => handleNavClick(() => window.open(WHATSAPP_LINK, '_blank'))}
-            className="bg-brand-primary text-white px-6 py-3 rounded-full text-sm font-bold hover:bg-brand-primary/80 transition-all duration-300 text-center"
+            className="bg-brand-orange text-white px-6 py-3 rounded-full text-sm font-bold hover:bg-brand-orange/90 transition-all duration-300 text-center"
           >
             Hire Me
           </button>

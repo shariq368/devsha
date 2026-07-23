@@ -74,8 +74,15 @@ export const AntigravityBackground: React.FC = () => {
     };
 
     const handlePointerMove = (e: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      if (!canvasRef.current) return;
+      const rect = canvasRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+        mouseRef.current = { x, y };
+      } else {
+        mouseRef.current = { x: -9999, y: -9999 };
+      }
     };
 
     const handlePointerLeave = () => {
@@ -160,16 +167,16 @@ export const AntigravityBackground: React.FC = () => {
     };
 
     window.addEventListener('resize', resize);
-    canvas.addEventListener('pointermove', handlePointerMove);
-    canvas.addEventListener('pointerleave', handlePointerLeave);
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('pointerleave', handlePointerLeave, { passive: true });
 
     resize();
     animFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('resize', resize);
-      canvas.removeEventListener('pointermove', handlePointerMove);
-      canvas.removeEventListener('pointerleave', handlePointerLeave);
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerleave', handlePointerLeave);
       cancelAnimationFrame(animFrameRef.current);
     };
   }, []);
@@ -177,8 +184,7 @@ export const AntigravityBackground: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 z-0 bg-transparent"
-      style={{ touchAction: 'none' }}
+      className="absolute inset-0 z-0 bg-transparent pointer-events-none"
     />
   );
 };

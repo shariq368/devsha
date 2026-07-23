@@ -13,13 +13,10 @@ const Footer: React.FC = () => {
   }
 
   const handleServices = () => {
-    if (window.location.hash === '#/') {
+    if (window.location.hash === '#/' || window.location.pathname === '/') {
       document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
     } else {
-      navigate('/');
-      setTimeout(() => {
-        document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      navigate('/#services');
     }
   }
 

@@ -42,8 +42,8 @@ const Header: React.FC = () => {
 
           {/* Centered Navigation - Desktop */}
           <nav className="hidden md:flex items-center gap-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <button onClick={() => { navigate('/'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</button>
-            <button onClick={() => { navigate('/'); setTimeout(() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Services</button>
+            <button onClick={() => location.pathname === '/' ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate('/')} className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</button>
+            <button onClick={() => location.pathname === '/' ? document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' }) : navigate('/#services')} className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Services</button>
             <button onClick={() => navigate('/portfolio')} className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Portfolio</button>
             <button onClick={() => navigate('/contact')} className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Contact</button>
           </nav>
@@ -83,13 +83,13 @@ const Header: React.FC = () => {
       >
         <nav className="flex flex-col pt-24 px-6 gap-2">
           <button
-            onClick={() => handleNavClick(() => { navigate('/'); window.scrollTo({ top: 0, behavior: 'smooth' }); })}
+            onClick={() => handleNavClick(() => location.pathname === '/' ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate('/'))}
             className="text-left text-lg font-medium text-gray-300 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all duration-200"
           >
             Home
           </button>
           <button
-            onClick={() => handleNavClick(() => { navigate('/'); setTimeout(() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' }), 100); })}
+            onClick={() => handleNavClick(() => location.pathname === '/' ? document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' }) : navigate('/#services'))}
             className="text-left text-lg font-medium text-gray-300 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all duration-200"
           >
             Services

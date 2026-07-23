@@ -9,10 +9,7 @@ const FloatingDock: React.FC = () => {
 
   const handleScroll = (id: string) => {
     if (location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      navigate(`/#${id}`);
     } else {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     }

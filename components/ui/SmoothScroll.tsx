@@ -12,10 +12,9 @@ export const SmoothScroll: React.FC<SmoothScrollProps> = ({ children }) => {
   const isAnimating = useRef(false);
 
   useEffect(() => {
-    // Detect fine pointer (mouse/trackpad) vs touch
+    // Detect mobile/touch devices
     isTouchDevice.current = window.matchMedia('(pointer: coarse)').matches;
     if (isTouchDevice.current) {
-      // On mobile touch devices, use native smooth scroll for native 120Hz gestures
       return;
     }
 
@@ -31,14 +30,14 @@ export const SmoothScroll: React.FC<SmoothScrollProps> = ({ children }) => {
     const updateScroll = () => {
       const diff = targetY.current - currentY.current;
 
-      if (Math.abs(diff) > 0.3) {
-        // High quality smooth lerp easing
-        currentY.current += diff * 0.09;
-        window.scrollTo(0, currentY.current);
+      if (Math.abs(diff) > 0.2) {
+        // High quality smooth lerp easing (0.12 for fast responsive momentum)
+        currentY.current += diff * 0.12;
+        window.scrollTo({ top: currentY.current, behavior: 'instant' as ScrollBehavior });
         animFrameId.current = requestAnimationFrame(updateScroll);
       } else {
         currentY.current = targetY.current;
-        window.scrollTo(0, currentY.current);
+        window.scrollTo({ top: currentY.current, behavior: 'instant' as ScrollBehavior });
         isAnimating.current = false;
         animFrameId.current = null;
       }
@@ -66,12 +65,18 @@ export const SmoothScroll: React.FC<SmoothScrollProps> = ({ children }) => {
         el = el.parentElement;
       }
 
+      // Trackpad detection: trackpads emit high-frequency small fractional deltas
+      const isTrackpad = Math.abs(e.deltaY) < 50 && !Number.isInteger(e.deltaY);
+      if (isTrackpad) {
+        // Allow trackpad to scroll with native gesture momentum and 0 latency
+        return;
+      }
+
       e.preventDefault();
 
       const maxScroll = getMaxScroll();
-      // Normalize wheel delta across browsers
       let delta = e.deltaY;
-      if (e.deltaMode === 1) delta *= 40; // line mode
+      if (e.deltaMode === 1) delta *= 30; // line mode
       if (e.deltaMode === 2) delta *= window.innerHeight; // page mode
 
       targetY.current = Math.min(
@@ -83,7 +88,6 @@ export const SmoothScroll: React.FC<SmoothScrollProps> = ({ children }) => {
     };
 
     const onNativeScroll = () => {
-      // Keep target in sync if browser scrolls outside wheel event (e.g. scrollbar drag)
       if (!isAnimating.current) {
         currentY.current = window.scrollY;
         targetY.current = window.scrollY;

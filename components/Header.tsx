@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { WHATSAPP_LINK } from '../constants';
 import { Menu, X } from 'lucide-react';
+import logoImg from '../Assets/logo-transparent.png';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -30,14 +31,23 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-[60] py-4 px-6 md:px-12 transition-all duration-300 backdrop-blur-sm bg-dark/50 border-b border-white/5">
+      <header className="fixed top-0 left-0 right-0 z-[60] py-3.5 px-6 md:px-12 transition-all duration-300 backdrop-blur-md bg-dark/70 border-b border-white/5">
         <div className="max-w-7xl mx-auto flex items-center justify-between relative">
           <div
-            className="text-2xl font-bold font-sans cursor-pointer tracking-tighter z-20"
-            onClick={() => navigate('/')}
+            className="flex items-center cursor-pointer z-20 group"
+            onClick={() => {
+              if (location.pathname === '/') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                navigate('/');
+              }
+            }}
           >
-            <span className="text-white">Dev</span>
-            <span className="text-brand-primary">Sha</span>
+            <img
+              src={logoImg}
+              alt="DevSha"
+              className="h-8 md:h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            />
           </div>
 
           {/* Centered Navigation - Desktop */}

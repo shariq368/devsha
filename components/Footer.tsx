@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Phone } from 'lucide-react';
 import { WHATSAPP_LINK } from '../constants';
+import logoImg from '../Assets/logo-transparent.png';
 
 const Footer: React.FC = () => {
   const navigate = useNavigate();
@@ -27,11 +28,14 @@ const Footer: React.FC = () => {
           {/* Brand Column */}
           <div className="space-y-4">
             <div
-              className="text-2xl font-bold font-sans cursor-pointer tracking-tighter"
+              className="flex items-center cursor-pointer group"
               onClick={() => handleNav('/')}
             >
-              <span className="text-white">Dev</span>
-              <span className="text-brand-primary">Sha</span>
+              <img
+                src={logoImg}
+                alt="DevSha"
+                className="h-8 md:h-9 w-auto object-contain transition-opacity group-hover:opacity-90"
+              />
             </div>
             <p className="text-gray-400 max-w-sm text-sm leading-relaxed">
               Helping brands grow through premium design, robust technology, and performance-driven marketing strategies.

@@ -4,7 +4,8 @@ export interface Project {
   category: string;
   color: string;
   description: string;
-  image?: string;
+  /** Imported preview screenshot. Required — a missing src renders a broken image. */
+  image: string;
 }
 
 export interface Service {

@@ -7,26 +7,24 @@ import Portfolio from './pages/Portfolio';
 import Contact from './pages/Contact';
 import CustomCursor from './components/ui/CustomCursor';
 import ScrollToTop from './components/ScrollToTop';
-import SmoothScroll from './components/ui/SmoothScroll';
 
 const App: React.FC = () => {
   return (
     <Router>
       <ScrollToTop />
-      <SmoothScroll>
-        <CustomCursor />
-        <div className="relative min-h-screen flex flex-col">
-          <Header />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/portfolio" element={<Portfolio />} />
-              <Route path="/contact" element={<Contact />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </SmoothScroll>
+      <CustomCursor />
+      <div className="relative min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </Router>
   );
 };

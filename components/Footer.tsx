@@ -1,21 +1,29 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Phone } from 'lucide-react';
-import { WHATSAPP_LINK } from '../constants';
+import { CONTACT_EMAIL, WHATSAPP_LINK, WHATSAPP_DISPLAY_NUMBER } from '../constants';
 import logoImg from '../Assets/logo-transparent.png';
 
 const Footer: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const currentYear = new Date().getFullYear();
 
+  // ScrollToTop already resets the scroll position on route change, so this
+  // must not also fire its own scroll (the two used to race each other).
   const handleNav = (path: string) => {
     navigate(path);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  /*
+   * The app uses HashRouter, so window.location.pathname is always "/" and
+   * window.location.hash looks like "#/portfolio". Both of the old checks were
+   * therefore wrong, which left this button dead on every non-home page.
+   * The router's own location is the only reliable source.
+   */
   const handleServices = () => {
-    if (window.location.hash === '#/' || window.location.pathname === '/') {
-      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
+    if (location.pathname === '/') {
+      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
       navigate('/#services');
     }
@@ -69,13 +77,13 @@ const Footer: React.FC = () => {
             <h3 className="text-white font-bold text-lg mb-6">Get in Touch</h3>
             <ul className="space-y-4">
               <li>
-                <a href="mailto:muhammadshariq368@gmail.com" className="flex items-start gap-3 text-gray-400 group hover:text-white transition-colors">
+                <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-start gap-3 text-gray-400 group hover:text-white transition-colors">
                   <div className="mt-1 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-brand-primary transition-colors text-brand-primary group-hover:text-white">
                     <Mail size={14} />
                   </div>
                   <div className="flex flex-col">
                     <span className="text-xs text-gray-500 uppercase font-semibold tracking-wider">Email</span>
-                    <span className="text-sm">muhammadshariq368@gmail.com</span>
+                    <span className="text-sm break-words">{CONTACT_EMAIL}</span>
                   </div>
                 </a>
               </li>
@@ -86,7 +94,7 @@ const Footer: React.FC = () => {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-xs text-gray-500 uppercase font-semibold tracking-wider">WhatsApp</span>
-                    <span className="text-sm">03082891023</span>
+                    <span className="text-sm">{WHATSAPP_DISPLAY_NUMBER}</span>
                   </div>
                 </a>
               </li>

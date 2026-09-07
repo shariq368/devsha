@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Star, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { SERVICES, TESTIMONIALS, PROJECTS, WHATSAPP_LINK } from '../constants';
@@ -67,10 +67,10 @@ const ServiceCard: React.FC<{ service: Service; index: number }> = ({ service, i
         />
 
         <div className="relative z-10">
-          <div 
+          <div
             className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-brand-primary transition-all duration-300 shadow-lg"
-            style={{ 
-              backgroundColor: isHovered ? `rgba(${spotColor}, 0.15)` : '', 
+            style={{
+              backgroundColor: isHovered ? `rgba(${spotColor}, 0.15)` : '',
               borderColor: isHovered ? `rgba(${spotColor}, 0.3)` : '',
               color: isHovered ? `rgb(${spotColor})` : 'rgba(255,255,255,0.7)',
               boxShadow: isHovered ? `0 10px 20px rgba(${spotColor}, 0.15)` : ''
@@ -78,7 +78,7 @@ const ServiceCard: React.FC<{ service: Service; index: number }> = ({ service, i
           >
             <service.icon size={28} />
           </div>
-          <h3 
+          <h3
             className="text-xl font-bold text-white mb-3 transition-colors duration-300"
             style={{ color: isHovered ? `rgb(${spotColor})` : 'white' }}
           >
@@ -95,6 +95,8 @@ const ServiceCard: React.FC<{ service: Service; index: number }> = ({ service, i
 const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, index }) => {
   const [hovered, setHovered] = useState(false);
   const isEven = index % 2 === 0;
+
+  const openProject = () => window.open(project.url, '_blank', 'noopener,noreferrer');
 
   return (
     <motion.div
@@ -117,14 +119,16 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
       >
         {/* Image — takes 3/5 width on desktop */}
         <div
-          className={`relative overflow-hidden cursor-pointer ${ isEven ? 'md:col-span-3 md:order-1' : 'md:col-span-3 md:order-2' } aspect-[16/10] md:aspect-auto min-h-[260px]`}
-          onClick={() => window.open(project.url, '_blank')}
+          className={`relative overflow-hidden cursor-pointer ${isEven ? 'md:col-span-3 md:order-1' : 'md:col-span-3 md:order-2'} aspect-[16/10] md:aspect-auto min-h-[260px]`}
+          onClick={openProject}
         >
           {/* Tinted overlay based on project color */}
           <div className="absolute inset-0 z-10" style={{ background: `linear-gradient(135deg, ${project.color}22, transparent 60%)` }} />
           <img
-            src={project.image || `https://picsum.photos/800/600?random=${index + 50}`}
-            alt={project.title}
+            src={project.image}
+            alt={`${project.title} website preview`}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover transition-transform duration-700 ease-out"
             style={{ transform: hovered ? 'scale(1.06)' : 'scale(1)' }}
           />
@@ -139,7 +143,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
             }}
           />
           {/* Launch icon on hover */}
-          <div className={`absolute top-5 z-30 transition-all duration-300 ${ hovered ? 'opacity-100 scale-100' : 'opacity-0 scale-90' } ${ isEven ? 'right-5' : 'left-5' }`}>
+          <div className={`absolute top-5 z-30 transition-all duration-300 ${hovered ? 'opacity-100 scale-100' : 'opacity-0 scale-90'} ${isEven ? 'right-5' : 'left-5'}`}>
             <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
               <ArrowUpRight size={18} className="text-white" />
             </div>
@@ -147,7 +151,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
         </div>
 
         {/* Info Panel — takes 2/5 width on desktop */}
-        <div className={`relative flex flex-col justify-center p-8 md:p-10 ${ isEven ? 'md:col-span-2 md:order-2' : 'md:col-span-2 md:order-1' }`}>
+        <div className={`relative flex flex-col justify-center p-8 md:p-10 ${isEven ? 'md:col-span-2 md:order-2' : 'md:col-span-2 md:order-1'}`}>
           {/* Category badge */}
           <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full mb-5 text-xs font-bold uppercase tracking-widest"
             style={{ backgroundColor: project.color + '18', color: project.color, border: `1px solid ${project.color}30` }}>
@@ -171,7 +175,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
             className="inline-flex items-center gap-2 text-sm font-semibold self-start"
             style={{ color: project.color }}
           >
-            <span>Visit Live Site</span>
+            <span>Visit {project.title}</span>
             <ExternalLink size={14} />
           </motion.a>
         </div>
@@ -180,11 +184,18 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
   );
 };
 
-const Home: React.FC = () => {
+/*
+ * Sections live at module scope. They used to be declared inside Home's body,
+ * which created brand new component types on every render — React then threw
+ * away and remounted every section (restarting the hero canvas and replaying
+ * all entry animations) whenever Home re-rendered.
+ */
+
+// Section A: Hero
+const HeroSection: React.FC = () => {
   const navigate = useNavigate();
 
-  // Section A: Hero
-  const HeroSection = () => (
+  return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* CSS Linear Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-r from-brand-primary to-[#0A0A0A] opacity-20" />
@@ -196,7 +207,7 @@ const Home: React.FC = () => {
       {/* Subtle Gradient Overlay for Depth at bottom */}
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-dark to-transparent z-0 pointer-events-none" />
 
-      <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center pt-20">
+      <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center pt-28 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -209,15 +220,15 @@ const Home: React.FC = () => {
             <span className="text-sm font-medium text-gray-200">Available for new projects</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-extrabold font-sans leading-tight tracking-tight mb-6 drop-shadow-lg text-white">
-            I Design & Build <br />
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold font-sans leading-tight tracking-tight mb-6 drop-shadow-lg text-white">
+            I Design &amp; Build <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary via-white to-brand-yellow">
               Digital Experiences
             </span> <br />
             That Drive Results
           </h1>
 
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto font-light drop-shadow-md">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto font-light drop-shadow-md">
             Full-Stack Developer • Designer • Growth Strategist
           </p>
 
@@ -230,7 +241,7 @@ const Home: React.FC = () => {
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
             <button
-              onClick={() => window.open(WHATSAPP_LINK, '_blank')}
+              onClick={() => window.open(WHATSAPP_LINK, '_blank', 'noopener,noreferrer')}
               className="px-8 py-4 bg-transparent border border-white/20 text-white rounded-full font-bold hover:bg-white/10 transition-all duration-300 backdrop-blur-md"
             >
               Book a Call
@@ -275,7 +286,7 @@ const Home: React.FC = () => {
           </div>
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-yellow" />
-            Vite & React Stacks
+            Vite &amp; React Stacks
           </div>
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
@@ -285,35 +296,39 @@ const Home: React.FC = () => {
       </div>
     </section>
   );
+};
 
-  // Section B: Services (Now moved up)
-  const ServicesSection = () => (
-    <section id="services" className="py-24 bg-dark relative overflow-hidden">
-      {/* Background Grid Pattern */}
-      <div className="absolute inset-0 h-full w-full bg-dark bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
+// Section B: Services
+const ServicesSection: React.FC = () => (
+  <section id="services" className="py-24 bg-dark relative overflow-hidden">
+    {/* Background Grid Pattern */}
+    <div className="absolute inset-0 h-full w-full bg-dark bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
-      <div className="container mx-auto px-6 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">What I Can Do For Your Business</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">Comprehensive digital solutions tailored to scale your brand.</p>
-        </motion.div>
+    <div className="container mx-auto px-6 relative z-10">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="text-center mb-16"
+      >
+        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">What I Can Do For Your Business</h2>
+        <p className="text-gray-400 max-w-2xl mx-auto">Comprehensive digital solutions tailored to scale your brand.</p>
+      </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {SERVICES.map((service, idx) => (
-            <ServiceCard key={idx} service={service} index={idx} />
-          ))}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {SERVICES.map((service, idx) => (
+          <ServiceCard key={service.title} service={service} index={idx} />
+        ))}
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 
-  // Section C: Featured Projects
-  const PortfolioPreview = () => (
+// Section C: Featured Projects
+const PortfolioPreview: React.FC = () => {
+  const navigate = useNavigate();
+
+  return (
     <section className="py-32 bg-dark relative border-t border-white/5 overflow-hidden">
       {/* Ambient background glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] rounded-full opacity-[0.04] blur-[100px] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #22C55E, transparent 70%)' }} />
@@ -356,7 +371,7 @@ const Home: React.FC = () => {
         {/* Project cards */}
         <div className="flex flex-col gap-8">
           {PROJECTS.slice(0, 3).map((project, idx) => (
-            <ProjectCard key={idx} project={project} index={idx} />
+            <ProjectCard key={project.title} project={project} index={idx} />
           ))}
         </div>
 
@@ -371,7 +386,7 @@ const Home: React.FC = () => {
           <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
           <button
             onClick={() => navigate('/portfolio')}
-            className="px-8 py-3 rounded-full border border-brand-primary/40 bg-brand-primary/10 text-brand-primary text-sm font-semibold hover:bg-brand-primary hover:text-white transition-all duration-300"
+            className="px-8 py-3 rounded-full border border-brand-primary/40 bg-brand-primary/10 text-brand-primary text-sm font-semibold hover:bg-brand-primary hover:text-white transition-all duration-300 whitespace-nowrap"
           >
             See all {PROJECTS.length} projects →
           </button>
@@ -380,9 +395,13 @@ const Home: React.FC = () => {
       </div>
     </section>
   );
+};
 
-  // Section D: About / Mission (Professional, No Image)
-  const AboutSection = () => (
+// Section D: About / Mission
+const AboutSection: React.FC = () => {
+  const navigate = useNavigate();
+
+  return (
     <section className="py-32 bg-dark relative border-t border-white/5 overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(34,197,94,0.03),transparent)] pointer-events-none" />
 
@@ -442,139 +461,161 @@ const Home: React.FC = () => {
       </div>
     </section>
   );
+};
 
-  // Section E: Benefits Cloud
-  const BenefitsSection = () => (
-    <section className="py-24 bg-dark relative overflow-hidden">
-      <div className="container mx-auto px-6 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-16">Why Clients Choose <span className="text-brand-primary">DevSha</span></h2>
+// Section E: Benefits Cloud
+const BENEFITS = [
+  "Results Driven",
+  "Fast Execution",
+  "Conversion Focused",
+  "Scalable Solutions",
+  "Creative Strategy",
+  "Tech Expertise",
+];
 
-        <div className="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
-          {["Results Driven", "Fast Execution", "Conversion Focused", "Scalable Solutions", "Creative Strategy", "Tech Expertise"].map((tag, idx) => (
-            <motion.div
-              key={idx}
-              whileHover={{ scale: 1.1, rotate: Math.random() * 4 - 2 }}
-              className="px-8 py-4 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-xl font-medium text-gray-300 cursor-default hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-colors"
-            >
-              {tag}
-            </motion.div>
-          ))}
-        </div>
+const BenefitsSection: React.FC = () => (
+  <section className="py-24 bg-dark relative overflow-hidden">
+    <div className="container mx-auto px-6 text-center">
+      <h2 className="text-4xl md:text-5xl font-bold text-white mb-16">Why Clients Choose <span className="text-brand-primary">DevSha</span></h2>
+
+      <div className="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
+        {BENEFITS.map((tag, idx) => (
+          <motion.div
+            key={tag}
+            // Deterministic tilt — Math.random() here produced a different
+            // angle on every render, so the hover animation never settled.
+            whileHover={{ scale: 1.1, rotate: idx % 2 === 0 ? 2 : -2 }}
+            className="px-6 sm:px-8 py-4 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-lg sm:text-xl font-medium text-gray-300 cursor-default hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-colors"
+          >
+            {tag}
+          </motion.div>
+        ))}
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 
-  // Section F: Testimonials
-  const TestimonialsSection = () => (
-    <section id="testimonials" className="py-24 bg-dark text-white relative border-t border-white/5">
-      <div className="container mx-auto px-6">
-        <h2 className="text-4xl font-bold text-center mb-16 text-white">What People Say</h2>
+// Section F: Testimonials
+const TestimonialsSection: React.FC = () => (
+  <section id="testimonials" className="py-24 bg-dark text-white relative border-t border-white/5">
+    <div className="container mx-auto px-6">
+      <h2 className="text-4xl font-bold text-center mb-16 text-white">What People Say</h2>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {TESTIMONIALS.map((t, idx) => (
-            <motion.div
-              key={idx}
-              whileHover={{ y: -5 }}
-              className="bg-white/5 p-8 rounded-3xl relative border border-white/10 hover:border-brand-primary/50 transition-colors shadow-lg shadow-brand-primary/5"
-            >
-              {/* Doodle decoration */}
-              <div className="absolute -top-4 -right-4 text-brand-primary opacity-50">
-                <Star fill="currentColor" size={40} />
-              </div>
+      <div className="grid md:grid-cols-3 gap-8">
+        {TESTIMONIALS.map((t) => (
+          <motion.div
+            key={t.name}
+            whileHover={{ y: -5 }}
+            className="bg-white/5 p-8 rounded-3xl relative border border-white/10 hover:border-brand-primary/50 transition-colors shadow-lg shadow-brand-primary/5"
+          >
+            {/* Doodle decoration */}
+            <div className="absolute -top-4 -right-4 text-brand-primary opacity-50" aria-hidden="true">
+              <Star fill="currentColor" size={40} />
+            </div>
 
-              <p className="text-lg italic text-neutral-300 mb-6">"{t.quote}"</p>
+            <p className="text-lg italic text-neutral-300 mb-6">"{t.quote}"</p>
 
-              <div className="flex items-center gap-4">
-                <img src={t.image} alt={t.name} className="w-12 h-12 rounded-full object-cover border border-white/10" />
-                <div>
-                  <div className="font-bold text-white">{t.name}</div>
-                  <div className="text-sm text-neutral-500">{t.role}</div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-
-  // Section G: Final CTA
-  const FinalCTA = () => (
-    <section className="py-32 bg-dark relative overflow-hidden flex items-center justify-center">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-primary/20 via-dark to-dark pointer-events-none" />
-
-      <div className="container mx-auto px-6 relative z-10 text-center">
-        <h2 className="text-5xl md:text-7xl font-bold text-white mb-8">
-          Ready to <span className="relative inline-block px-4">
-            <svg className="absolute inset-0 w-full h-full text-brand-yellow -z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path d="M0,50 Q50,0 100,50 Q50,100 0,50 Z" fill="currentColor" opacity="0.8" />
-            </svg>
-            <span className="relative z-10 text-dark">grow</span>
-          </span> your business?
-        </h2>
-
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => window.open(WHATSAPP_LINK, '_blank')}
-          className="px-10 py-5 bg-brand-primary text-white text-xl font-bold rounded-full shadow-2xl shadow-brand-primary/40 hover:shadow-brand-primary/60 transition-all"
-        >
-          Work With Muhammad Shariq →
-        </motion.button>
-
-        {/* Floating star */}
-        <motion.div
-          animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
-          transition={{ duration: 4, repeat: Infinity }}
-          className="absolute top-10 right-[20%] text-brand-primary"
-        >
-          <Star fill="currentColor" size={48} />
-        </motion.div>
-      </div>
-    </section>
-  );
-
-  // Section H: CEO
-  const CEOSection = () => (
-    <section className="py-24 bg-dark relative border-t border-white/5 overflow-hidden">
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-5xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-sm">
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="w-full md:w-1/3 flex justify-center md:justify-start">
-              <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-brand-primary shadow-2xl shadow-brand-primary/20">
-                <img
-                  src={ceoImg}
-                  alt="Muhammad Shariq"
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                />
+            <div className="flex items-center gap-4">
+              <img
+                src={t.image}
+                alt={t.name}
+                width={48}
+                height={48}
+                loading="lazy"
+                decoding="async"
+                className="w-12 h-12 rounded-full object-cover border border-white/10"
+              />
+              <div>
+                <div className="font-bold text-white">{t.name}</div>
+                <div className="text-sm text-neutral-500">{t.role}</div>
               </div>
             </div>
-            <div className="w-full md:w-2/3 text-center md:text-left">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">Muhammad Shariq</h2>
-              <h3 className="text-xl text-brand-primary font-medium mb-6">CEO & Founder</h3>
-              <p className="text-gray-400 text-lg leading-relaxed mb-6">
-                "My vision is to empower businesses through innovative digital solutions. With over a decade of experience in software engineering and design, I lead DevSha with a commitment to excellence, ensuring every project we deliver drives real, measurable growth for our clients."
-              </p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+// Section G: CEO
+const CEOSection: React.FC = () => (
+  <section className="py-24 bg-dark relative border-t border-white/5 overflow-hidden">
+    <div className="container mx-auto px-6 relative z-10">
+      <div className="max-w-5xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-sm">
+        <div className="flex flex-col md:flex-row items-center gap-12">
+          <div className="w-full md:w-1/3 flex justify-center md:justify-start">
+            <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-brand-primary shadow-2xl shadow-brand-primary/20">
+              <img
+                src={ceoImg}
+                alt="Muhammad Shariq, CEO and Founder of DevSha"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
             </div>
+          </div>
+          <div className="w-full md:w-2/3 text-center md:text-left">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">Muhammad Shariq</h2>
+            <h3 className="text-xl text-brand-primary font-medium mb-6">CEO &amp; Founder</h3>
+            <p className="text-gray-400 text-lg leading-relaxed mb-6">
+              "My vision is to empower businesses through innovative digital solutions. With over a decade of experience in software engineering and design, I lead DevSha with a commitment to excellence, ensuring every project we deliver drives real, measurable growth for our clients."
+            </p>
           </div>
         </div>
       </div>
-    </section>
-  );
-
-  return (
-    <div className="bg-dark min-h-screen">
-      <HeroSection />
-      <ServicesSection />
-      <PortfolioPreview />
-      <AboutSection />
-      <BenefitsSection />
-      <TestimonialsSection />
-      <CEOSection />
-      <FinalCTA />
     </div>
-  );
-};
+  </section>
+);
+
+// Section H: Final CTA
+const FinalCTA: React.FC = () => (
+  <section className="py-32 bg-dark relative overflow-hidden flex items-center justify-center">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-primary/20 via-dark to-dark pointer-events-none" />
+
+    <div className="container mx-auto px-6 relative z-10 text-center">
+      <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-8">
+        Ready to <span className="relative inline-block px-4">
+          <svg className="absolute inset-0 w-full h-full text-brand-yellow -z-10" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0,50 Q50,0 100,50 Q50,100 0,50 Z" fill="currentColor" opacity="0.8" />
+          </svg>
+          <span className="relative z-10 text-dark">grow</span>
+        </span> your business?
+      </h2>
+
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => window.open(WHATSAPP_LINK, '_blank', 'noopener,noreferrer')}
+        className="px-8 sm:px-10 py-5 bg-brand-primary text-white text-lg sm:text-xl font-bold rounded-full shadow-2xl shadow-brand-primary/40 hover:shadow-brand-primary/60 transition-all"
+      >
+        Work With Muhammad Shariq →
+      </motion.button>
+
+      {/* Floating star — decorative, hidden on small screens where it overlapped the heading */}
+      <motion.div
+        animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
+        transition={{ duration: 4, repeat: Infinity }}
+        className="hidden md:block absolute top-10 right-[20%] text-brand-primary"
+        aria-hidden="true"
+      >
+        <Star fill="currentColor" size={48} />
+      </motion.div>
+    </div>
+  </section>
+);
+
+const Home: React.FC = () => (
+  <div className="bg-dark min-h-screen">
+    <HeroSection />
+    <ServicesSection />
+    <PortfolioPreview />
+    <AboutSection />
+    <BenefitsSection />
+    <TestimonialsSection />
+    <CEOSection />
+    <FinalCTA />
+  </div>
+);
 
 export default Home;

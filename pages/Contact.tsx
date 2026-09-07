@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Mail, Phone, ArrowLeft, ArrowUpRight, Send, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { WHATSAPP_LINK } from '../constants';
+import { CONTACT_EMAIL, WHATSAPP_LINK, WHATSAPP_DISPLAY_NUMBER } from '../constants';
 
 const Contact: React.FC = () => {
   const navigate = useNavigate();
@@ -12,21 +12,40 @@ const Contact: React.FC = () => {
     message: ''
   });
   const [showSuccess, setShowSuccess] = useState(false);
+  const successTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  // Clear the pending timer on unmount so it can't fire on a dead component.
+  useEffect(() => () => clearTimeout(successTimer.current), []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     const subject = `Project Inquiry from ${formData.name}`;
-    const body = `Name: ${formData.name}%0D%0AEmail: ${formData.email}%0D%0A%0D%0AMessage:%0D%0A${formData.message}`;
-    
-    // Trigger mailto
-    window.location.href = `mailto:muhammadshariq368@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
-    
-    // Show success message and reset form
+    /*
+     * The whole body must go through encodeURIComponent. The old version
+     * hand-wrote %0D%0A separators and dropped raw user input in beside them,
+     * so any "&", "#" or "?" the visitor typed truncated the message.
+     */
+    const body = [
+      `Name: ${formData.name}`,
+      `Email: ${formData.email}`,
+      '',
+      'Message:',
+      formData.message,
+    ].join('\r\n');
+
+    window.location.href =
+      `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    /*
+     * A mailto: hand-off gives no delivery confirmation, so the old "Message
+     * sent successfully!" was not something we can know. The form is also left
+     * populated now — clearing it lost the visitor's text whenever no mail
+     * client was configured.
+     */
     setShowSuccess(true);
-    setFormData({ name: '', email: '', message: '' });
-    
-    // Hide notification after 5 seconds
-    setTimeout(() => setShowSuccess(false), 5000);
+    clearTimeout(successTimer.current);
+    successTimer.current = setTimeout(() => setShowSuccess(false), 8000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -60,7 +79,7 @@ const Contact: React.FC = () => {
               <div className="grid sm:grid-cols-2 gap-6 mb-12 lg:mb-0">
                  {/* Email Card */}
                  <motion.a
-                   href="mailto:muhammadshariq368@gmail.com"
+                   href={`mailto:${CONTACT_EMAIL}`}
                    initial={{ opacity: 0, y: 20 }}
                    animate={{ opacity: 1, y: 0 }}
                    transition={{ delay: 0.1 }}
@@ -71,7 +90,7 @@ const Contact: React.FC = () => {
                     </div>
                     <div>
                        <h3 className="text-xl font-bold text-white mb-1">Email</h3>
-                       <p className="text-gray-400 text-sm mb-3">muhammadshariq368@gmail.com</p>
+                       <p className="text-gray-400 text-xs mb-3 break-words">{CONTACT_EMAIL}</p>
                        <span className="text-brand-primary text-sm font-medium flex items-center gap-2">
                          Send Email <ArrowUpRight size={14} />
                        </span>
@@ -93,7 +112,7 @@ const Contact: React.FC = () => {
                     </div>
                     <div>
                        <h3 className="text-xl font-bold text-white mb-1">WhatsApp</h3>
-                       <p className="text-gray-400 text-sm mb-3">03082891023</p>
+                       <p className="text-gray-400 text-sm mb-3">{WHATSAPP_DISPLAY_NUMBER}</p>
                        <span className="text-brand-green text-sm font-medium flex items-center gap-2">
                          Chat on WhatsApp <ArrowUpRight size={14} />
                        </span>
@@ -113,14 +132,20 @@ const Contact: React.FC = () => {
               
               <AnimatePresence>
                 {showSuccess && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: -10, height: 0 }}
                     animate={{ opacity: 1, y: 0, height: 'auto' }}
                     exit={{ opacity: 0, y: -10, height: 0 }}
-                    className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl flex items-center gap-3 text-green-400 overflow-hidden"
+                    role="status"
+                    aria-live="polite"
+                    className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl flex items-start gap-3 text-green-400 overflow-hidden"
                   >
-                    <CheckCircle size={20} className="shrink-0" />
-                    <p className="font-medium text-sm">Message sent successfully!</p>
+                    <CheckCircle size={20} className="shrink-0 mt-0.5" />
+                    <p className="font-medium text-sm">
+                      Your email app should now be open with the message ready — just hit send.
+                      No mail app? Write to{' '}
+                      <a href={`mailto:${CONTACT_EMAIL}`} className="underline">{CONTACT_EMAIL}</a>.
+                    </p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -131,10 +156,12 @@ const Contact: React.FC = () => {
                   <input 
                     type="text" 
                     id="name" 
-                    name="name" 
+                    name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
+                    autoComplete="name"
+                    maxLength={100}
                     className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary transition-colors placeholder-gray-600"
                     placeholder="John Doe"
                   />
@@ -144,10 +171,12 @@ const Contact: React.FC = () => {
                   <input 
                     type="email" 
                     id="email" 
-                    name="email" 
+                    name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
+                    autoComplete="email"
+                    maxLength={254}
                     className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary transition-colors placeholder-gray-600"
                     placeholder="john@example.com"
                   />
@@ -161,6 +190,7 @@ const Contact: React.FC = () => {
                     onChange={handleChange}
                     required
                     rows={4}
+                    maxLength={2000}
                     className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary transition-colors placeholder-gray-600 resize-none"
                     placeholder="Tell me about your project..."
                   />

@@ -20,7 +20,7 @@ const FloatingDock: React.FC = () => {
     { icon: Layers, label: 'Services', action: () => handleScroll('services') },
     { icon: Briefcase, label: 'Work', action: () => navigate('/portfolio') },
     { icon: User, label: 'Testimonials', action: () => handleScroll('testimonials') },
-    { icon: MessageSquare, label: 'Contact', action: () => window.open(WHATSAPP_LINK, '_blank') },
+    { icon: MessageSquare, label: 'Contact', action: () => window.open(WHATSAPP_LINK, '_blank', 'noopener,noreferrer') },
   ];
 
   return (

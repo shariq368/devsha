@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ArrowLeft, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -10,11 +10,15 @@ const ALL_CATEGORIES = ['All', ...Array.from(new Set(PROJECTS.map(p => p.categor
 const Portfolio: React.FC = () => {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState('All');
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  /*
+   * Tracked by title rather than list index: after a filter change the same
+   * index points at a different project, which left the wrong card highlighted.
+   */
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Scroll reset is handled centrally by <ScrollToTop />. Doing it again here
+  // fought that, and now that html has scroll-behavior:smooth it would also
+  // animate the jump instead of landing at the top immediately.
 
   const filtered = activeFilter === 'All'
     ? PROJECTS
@@ -101,21 +105,38 @@ const Portfolio: React.FC = () => {
               transition={{ duration: 0.3 }}
               className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
             >
-              {filtered.map((project, idx) => (
+              {filtered.map((project, idx) => {
+                const isHovered = hoveredKey === project.title;
+                const open = () => window.open(project.url, '_blank', 'noopener,noreferrer');
+
+                return (
                 <motion.div
                   key={project.title}
                   initial={{ opacity: 0, y: 24, scale: 0.97 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ delay: idx * 0.07, duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-                  onMouseEnter={() => setHoveredIdx(idx)}
-                  onMouseLeave={() => setHoveredIdx(null)}
+                  onMouseEnter={() => setHoveredKey(project.title)}
+                  onMouseLeave={() => setHoveredKey(null)}
+                  onFocus={() => setHoveredKey(project.title)}
+                  onBlur={() => setHoveredKey(null)}
                   className="group relative flex flex-col rounded-[28px] overflow-hidden border border-white/8 bg-white/[0.03] backdrop-blur-sm cursor-pointer transition-all duration-500"
                   style={{
-                    boxShadow: hoveredIdx === idx
+                    boxShadow: isHovered
                       ? `0 24px 60px ${project.color}20, 0 0 0 1px ${project.color}25`
                       : '0 8px 32px rgba(0,0,0,0.3)',
                   }}
-                  onClick={() => window.open(project.url, '_blank')}
+                  // The card was mouse-only. It is now reachable and operable
+                  // from the keyboard as well.
+                  role="link"
+                  tabIndex={0}
+                  aria-label={`${project.title} — open live site in a new tab`}
+                  onClick={open}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      open();
+                    }
+                  }}
                 >
                   {/* Image container */}
                   <div className="relative aspect-[16/10] overflow-hidden">
@@ -124,14 +145,16 @@ const Portfolio: React.FC = () => {
                       className="absolute inset-0 z-10 transition-opacity duration-500"
                       style={{
                         background: `linear-gradient(150deg, ${project.color}30 0%, transparent 60%)`,
-                        opacity: hoveredIdx === idx ? 1 : 0.6,
+                        opacity: isHovered ? 1 : 0.6,
                       }}
                     />
                     <img
                       src={project.image}
-                      alt={project.title}
+                      alt={`${project.title} website preview`}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover transition-transform duration-700 ease-out"
-                      style={{ transform: hoveredIdx === idx ? 'scale(1.07)' : 'scale(1)' }}
+                      style={{ transform: isHovered ? 'scale(1.07)' : 'scale(1)' }}
                     />
                     {/* Bottom gradient fade */}
                     <div className="absolute inset-x-0 bottom-0 h-24 z-20 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
@@ -140,8 +163,8 @@ const Portfolio: React.FC = () => {
                     <div
                       className="absolute top-4 right-4 z-30 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-300"
                       style={{
-                        opacity: hoveredIdx === idx ? 1 : 0,
-                        transform: hoveredIdx === idx ? 'scale(1) translateY(0)' : 'scale(0.8) translateY(4px)',
+                        opacity: isHovered ? 1 : 0,
+                        transform: isHovered ? 'scale(1) translateY(0)' : 'scale(0.8) translateY(4px)',
                       }}
                     >
                       <ArrowUpRight size={18} className="text-white" />
@@ -170,20 +193,20 @@ const Portfolio: React.FC = () => {
                     <div className="flex items-start justify-between gap-3">
                       <h3
                         className="text-xl font-bold text-white leading-snug tracking-tight transition-colors duration-300"
-                        style={{ color: hoveredIdx === idx ? project.color : 'white' }}
+                        style={{ color: isHovered ? project.color : 'white' }}
                       >
                         {project.title}
                       </h3>
                       <div
                         className="shrink-0 w-8 h-8 rounded-full border flex items-center justify-center transition-all duration-300"
                         style={{
-                          borderColor: hoveredIdx === idx ? project.color : 'rgba(255,255,255,0.1)',
-                          backgroundColor: hoveredIdx === idx ? project.color + '20' : 'transparent',
+                          borderColor: isHovered ? project.color : 'rgba(255,255,255,0.1)',
+                          backgroundColor: isHovered ? project.color + '20' : 'transparent',
                         }}
                       >
                         <ExternalLink
                           size={13}
-                          style={{ color: hoveredIdx === idx ? project.color : '#6b7280' }}
+                          style={{ color: isHovered ? project.color : '#6b7280' }}
                         />
                       </div>
                     </div>
@@ -196,19 +219,19 @@ const Portfolio: React.FC = () => {
                     <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
                       <span
                         className="text-xs font-semibold uppercase tracking-widest transition-colors duration-300"
-                        style={{ color: hoveredIdx === idx ? project.color : '#4b5563' }}
+                        style={{ color: isHovered ? project.color : '#4b5563' }}
                       >
                         Visit Live Site
                       </span>
                       <div
                         className="flex items-center gap-1 text-xs transition-all duration-300"
-                        style={{ color: hoveredIdx === idx ? project.color : '#374151' }}
+                        style={{ color: isHovered ? project.color : '#374151' }}
                       >
                         <span
                           className="h-px transition-all duration-300"
                           style={{
-                            width: hoveredIdx === idx ? '32px' : '16px',
-                            backgroundColor: hoveredIdx === idx ? project.color : '#374151',
+                            width: isHovered ? '32px' : '16px',
+                            backgroundColor: isHovered ? project.color : '#374151',
                           }}
                         />
                         <ArrowUpRight size={13} />
@@ -216,7 +239,8 @@ const Portfolio: React.FC = () => {
                     </div>
                   </div>
                 </motion.div>
-              ))}
+                );
+              })}
             </motion.div>
           </AnimatePresence>
 
@@ -245,7 +269,7 @@ const Portfolio: React.FC = () => {
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <button
-                  onClick={() => window.open(WHATSAPP_LINK, '_blank')}
+                  onClick={() => window.open(WHATSAPP_LINK, '_blank', 'noopener,noreferrer')}
                   className="px-8 py-4 bg-brand-primary text-white rounded-full font-bold hover:bg-[#16a34a] transition-all duration-300 shadow-xl shadow-brand-primary/30 flex items-center gap-2 group"
                 >
                   Start a Conversation

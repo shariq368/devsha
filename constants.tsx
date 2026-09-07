@@ -10,7 +10,9 @@ import imgKZFurniture from './Assets/website preview picture/kzfurniture.png';
 import imgEosLtd from './Assets/website preview picture/eos-ltd.png';
 
 export const WHATSAPP_NUMBER = "923082891023";
+export const WHATSAPP_DISPLAY_NUMBER = "0308 289 1023";
 export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}`;
+export const CONTACT_EMAIL = "muhammadshariq368@gmail.com";
 
 export const PROJECTS: Project[] = [
   {

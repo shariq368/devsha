@@ -98,6 +98,7 @@ const Header: React.FC = () => {
             <button onClick={goHome} className={navLinkClass(isHome && !location.hash)}>Home</button>
             <button onClick={goToServices} className={navLinkClass(false)}>Services</button>
             <button onClick={() => navigate('/portfolio')} className={navLinkClass(location.pathname === '/portfolio')}>Portfolio</button>
+            <button onClick={() => navigate('/software')} className={navLinkClass(location.pathname === '/software')}>Software</button>
             <button onClick={() => navigate('/contact')} className={navLinkClass(location.pathname === '/contact')}>Contact</button>
           </nav>
 
@@ -164,6 +165,12 @@ const Header: React.FC = () => {
             className="text-left text-lg font-medium text-gray-300 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all duration-200"
           >
             Portfolio
+          </button>
+          <button
+            onClick={() => handleNavClick(() => navigate('/software'))}
+            className="text-left text-lg font-medium text-gray-300 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all duration-200"
+          >
+            Software
           </button>
           <button
             onClick={() => handleNavClick(() => navigate('/contact'))}

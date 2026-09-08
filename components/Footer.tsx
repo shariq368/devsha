@@ -65,6 +65,11 @@ const Footer: React.FC = () => {
                 </button>
               </li>
               <li>
+                <button onClick={() => handleNav('/software')} className="text-gray-400 hover:text-brand-primary transition-colors text-sm">
+                  Software
+                </button>
+              </li>
+              <li>
                 <button onClick={() => handleNav('/contact')} className="text-gray-400 hover:text-brand-primary transition-colors text-sm">
                   Contact
                 </button>

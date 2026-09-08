@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Layers, Briefcase, MessageSquare, User } from 'lucide-react';
+import { Home, Layers, Briefcase, Monitor, MessageSquare, User } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { WHATSAPP_LINK } from '../constants';
 
@@ -19,6 +19,7 @@ const FloatingDock: React.FC = () => {
     { icon: Home, label: 'Home', action: () => handleScroll('hero') },
     { icon: Layers, label: 'Services', action: () => handleScroll('services') },
     { icon: Briefcase, label: 'Work', action: () => navigate('/portfolio') },
+    { icon: Monitor, label: 'Software', action: () => navigate('/software') },
     { icon: User, label: 'Testimonials', action: () => handleScroll('testimonials') },
     { icon: MessageSquare, label: 'Contact', action: () => window.open(WHATSAPP_LINK, '_blank', 'noopener,noreferrer') },
   ];

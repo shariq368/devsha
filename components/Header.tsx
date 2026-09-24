@@ -4,6 +4,10 @@ import { WHATSAPP_LINK } from '../constants';
 import { Menu, X } from 'lucide-react';
 import logoImg from '../Assets/logo-transparent.png';
 
+const preloadPortfolio = () => { import('../pages/Portfolio'); };
+const preloadSoftware = () => { import('../pages/Software'); };
+const preloadContact = () => { import('../pages/Contact'); };
+
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,9 +101,30 @@ const Header: React.FC = () => {
           >
             <button onClick={goHome} className={navLinkClass(isHome && !location.hash)}>Home</button>
             <button onClick={goToServices} className={navLinkClass(false)}>Services</button>
-            <button onClick={() => navigate('/portfolio')} className={navLinkClass(location.pathname === '/portfolio')}>Portfolio</button>
-            <button onClick={() => navigate('/software')} className={navLinkClass(location.pathname === '/software')}>Software</button>
-            <button onClick={() => navigate('/contact')} className={navLinkClass(location.pathname === '/contact')}>Contact</button>
+            <button
+              onClick={() => navigate('/portfolio')}
+              onMouseEnter={preloadPortfolio}
+              onFocus={preloadPortfolio}
+              className={navLinkClass(location.pathname === '/portfolio')}
+            >
+              Portfolio
+            </button>
+            <button
+              onClick={() => navigate('/software')}
+              onMouseEnter={preloadSoftware}
+              onFocus={preloadSoftware}
+              className={navLinkClass(location.pathname === '/software')}
+            >
+              Software
+            </button>
+            <button
+              onClick={() => navigate('/contact')}
+              onMouseEnter={preloadContact}
+              onFocus={preloadContact}
+              className={navLinkClass(location.pathname === '/contact')}
+            >
+              Contact
+            </button>
           </nav>
 
           {/* Right Side Buttons */}

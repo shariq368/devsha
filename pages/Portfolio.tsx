@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ArrowLeft, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -153,6 +153,8 @@ const Portfolio: React.FC = () => {
                       alt={`${project.title} website preview`}
                       loading="lazy"
                       decoding="async"
+                      width={640}
+                      height={400}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out"
                       style={{ transform: isHovered ? 'scale(1.07)' : 'scale(1)' }}
                     />

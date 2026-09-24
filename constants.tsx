@@ -1,13 +1,13 @@
 import { Palette, Globe, Code2, Bot, Megaphone, Smartphone, ShoppingBag } from 'lucide-react';
 import { Project, Service, Testimonial } from './types';
 
-import imgMetroStorage from './Assets/website preview picture/metrostorage&services.png';
-import imgTechnoCity from './Assets/website preview picture/thetechnocity.png';
-import imgAtsons from './Assets/website preview picture/atsons.png';
-import imgLeatherLuxes from './Assets/website preview picture/leatherluxes.png';
-import imgPanaverse from './Assets/website preview picture/panaversedao.png';
-import imgKZFurniture from './Assets/website preview picture/kzfurniture.png';
-import imgEosLtd from './Assets/website preview picture/eos-ltd.png';
+import imgMetroStorage from './Assets/website preview picture/metrostorage&services.webp';
+import imgFiberSolution from './Assets/website preview picture/fibersolution.webp';
+import imgAtsons from './Assets/website preview picture/atsons.webp';
+import imgLeatherLuxes from './Assets/website preview picture/leatherluxes.webp';
+import imgPanaverse from './Assets/website preview picture/panaversedao.webp';
+import imgKZFurniture from './Assets/website preview picture/kzfurniture.webp';
+import imgEosLtd from './Assets/website preview picture/eos-ltd.webp';
 
 export const WHATSAPP_NUMBER = "923082891023";
 export const WHATSAPP_DISPLAY_NUMBER = "0308 289 1023";
@@ -24,12 +24,12 @@ export const PROJECTS: Project[] = [
     image: imgMetroStorage
   },
   {
-    title: "The Techno City",
-    url: "https://thetechnocity.vercel.app",
-    category: "E-commerce",
-    color: "#4ADE80",
-    description: "Modern tech gadget store with seamless checkout experience.",
-    image: imgTechnoCity
+    title: "Fiber Solution",
+    url: "https://fibersolution.vercel.app",
+    category: "Security & IT Solutions",
+    color: "#38BDF8", // Electric Blue / IT Infrastructure
+    description: "Enterprise security, CCTV surveillance, networking & IT infrastructure platform.",
+    image: imgFiberSolution
   },
   {
     title: "Atsons",

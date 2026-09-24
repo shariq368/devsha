@@ -5,7 +5,8 @@ import { ArrowRight, Star, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { SERVICES, TESTIMONIALS, PROJECTS, WHATSAPP_LINK } from '../constants';
 import { AntigravityBackground } from '../components/ui/antigravity-background';
 import { Service, Project } from '../types';
-import ceoImg from '../Assets/ceo.jpeg';
+import ceoImg from '../Assets/ceo.webp';
+
 
 // Separate component for Spotlight Effect
 const SPOTLIGHT_COLORS = [
@@ -129,6 +130,8 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
             alt={`${project.title} website preview`}
             loading="lazy"
             decoding="async"
+            width={800}
+            height={500}
             className="w-full h-full object-cover transition-transform duration-700 ease-out"
             style={{ transform: hovered ? 'scale(1.06)' : 'scale(1)' }}
           />

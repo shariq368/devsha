@@ -16,8 +16,9 @@ const PARTICLE_COLORS = [
  * ~600 particles on a 1440p display) burned the whole frame budget on the main
  * thread and made scrolling stutter across the entire site.
  */
-const MAX_PARTICLES = 160;
-const AREA_PER_PARTICLE = 11000;
+const MAX_PARTICLES_DESKTOP = 100;
+const MAX_PARTICLES_MOBILE = 35;
+const AREA_PER_PARTICLE = 14000;
 
 const MOUSE_RADIUS = 120;
 const MOUSE_FORCE = 3;
@@ -134,8 +135,9 @@ export const AntigravityBackground: React.FC = () => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       if (isFirstLayout || changedMeaningfully) {
+        const maxLimit = width < 768 ? MAX_PARTICLES_MOBILE : MAX_PARTICLES_DESKTOP;
         const count = Math.min(
-          MAX_PARTICLES,
+          maxLimit,
           Math.floor((width * height) / AREA_PER_PARTICLE)
         );
         particles = [];
